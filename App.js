@@ -7,8 +7,12 @@ export default class PrimeiroProjeto extends Component{
 
     super(props)
     this.state = {
+      email:'',
+      senha:''
 
     }
+
+    this.cadastrar=this.cadastrar.bind(this)
 
     const config = {
       apiKey: "AIzaSyAg-EHPGlmqLHst0qshoESZjczit5PNN7U",
@@ -34,10 +38,54 @@ export default class PrimeiroProjeto extends Component{
   
   }
 
+  cadastrar(){
+
+    firebase.auth().createUserWithEmailAndPassword(
+      this.state.email,
+      this.state.senha
+      ).catch( (error)=>{
+        
+        switch(error.code){
+          case 'auth/weak-password':
+            alert("senha tem que ter ao menos 6 caracteres!")
+          break
+          
+          case 'auth/email-already-in-use':
+            alert("Este email já tem conta!")
+          break
+          
+          default:
+            alert("ocorreu um erro!")
+          break  
+        }
+    
+      }  )
+
+  }
+
   render(){
     return(
         <View style={styles.container}>
-          <Text>,,,</Text>
+          <Text>Email:</Text>
+
+          <TextInput style={styles.input} onChangeText={ (email)=> {
+            let state=this.state
+            state.email=email.trim()
+            this.setState(state)
+          } }  />
+
+
+
+          <Text>Senha:</Text>          
+
+
+          <TextInput secureTextEntry={true} style={styles.input} onChangeText={ (senha)=> {
+            let state=this.state
+            state.senha=senha
+            this.setState(state)
+          } }  />
+
+          <Button title="cadastrar" onPress={this.cadastrar} />
         </View>
     )
   }
@@ -58,6 +106,7 @@ const styles = StyleSheet.create({
   input:{
     borderColor:"#000000",
     borderWidth:1,    
-    height:40
+    height:40,
+    margin:10
   }
 });
